@@ -1,3 +1,7 @@
 *.iml
 .idea/
 kissy/
+*.iws
+*.ipr
+node_modules/
+/*.iws
