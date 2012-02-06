@@ -5,13 +5,14 @@
  */
 KISSY.add(function(S, Event) {
 
-    var BaseRule = function() {
-        this.validate = function() {
+    var BaseRule = {
 
+        validate:function () {
+           return true;
         }
     };
 
-    S.augment(BaseRule, S.EventTarget);
+    S.mix(BaseRule, S.EventTarget);
 
     return BaseRule;
 }, {
