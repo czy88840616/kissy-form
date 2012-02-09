@@ -3,10 +3,10 @@
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
-KISSY.use('form/validation/rule/base', function(S, Base) {
-    describe('base', function() {
-        it('base rule', function() {
-            var rule = new Base(function(s) {
+describe('base', function () {
+    KISSY.use('form/validation/rule/base', function (S, Base) {
+        it('base rule', function () {
+            var rule = new Base(function (s) {
                 return s > 0;
             });
 
@@ -14,8 +14,8 @@ KISSY.use('form/validation/rule/base', function(S, Base) {
             expect(result).toBeFalsy();
         });
 
-        it('another base rule', function() {
-            var rule = Base.add(function(s) {
+        it('another base rule', function () {
+            var rule = Base.add(function (s) {
                 return s > 5;
             });
 
@@ -23,9 +23,9 @@ KISSY.use('form/validation/rule/base', function(S, Base) {
             expect(result).toBeFalsy();
         });
 
-        it('obj rule', function() {
+        it('obj rule', function () {
             var ruleObj = {
-                validate: function(a, b) {
+                validate:function (a, b) {
                     return a > b;
                 }
             };
@@ -35,9 +35,9 @@ KISSY.use('form/validation/rule/base', function(S, Base) {
             expect(result).toBeTruthy();
         });
 
-        it('obj another rule', function() {
+        it('obj another rule', function () {
             var ruleObj = {
-                validate: function(a, b) {
+                validate:function (a, b) {
                     return a > b;
                 }
             };
@@ -46,10 +46,10 @@ KISSY.use('form/validation/rule/base', function(S, Base) {
             var result = rule.validate(2, 1);
             expect(result).toBeTruthy();
         });
-        
-        it('add rule name', function() {
-            Base.add('test', function(a, b) {
-                return a >b;
+
+        it('add rule name', function () {
+            Base.add('test', function (a, b) {
+                return a > b;
             });
 
             var rule = Base.get('test');
