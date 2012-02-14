@@ -55,44 +55,28 @@ describe('rule base', function () {
             var rule = Rule.get('test');
             expect(rule).toBeDefined();
         });
-        
-        it('init rule about test value', function() {
-            var rule = new Rule(function (s) {
-                return s > 0;
-            }, {
-                args:[4],
-                msg:{
-                    success:'pass',
-                    error:'fail'
-                }
-            });
-
-            var call = '';
-
-            rule.onError(function(e) {
-                call = e.msg;
-
-            });
-
-            rule.validate(-1);
-            expect(call).toEqual('fail');
-
-        });
 
         describe('trigger event', function() {
             it('event listener', function() {
                 var rule = new Rule(function (a, b) {
                     return a > b;
                 });
-                var call = 1;
-                rule.on('success', function(e) {
-                    call = 2;
-                }).on('error', function(e) {
-                    call = 3;
+
+                rule.on('validate', function(e) {
+                    expect(e.result).toBeFalsy();
                 }).validate(2, 4);
-                expect(call).toEqual(3);
             });
-            
+
+            it('event listener use method', function() {
+                var rule = new Rule(function (a, b) {
+                    return a > b;
+                });
+
+                rule.onValidate(function(e) {
+                    expect(e.result).toBeFalsy();
+                }).validate(2, 4);
+            });
+
             it('include event and validate result', function() {
                 var rule = new Rule(function (a, b) {
                     return a > b;
@@ -103,6 +87,53 @@ describe('rule base', function () {
                 expect(result).toBeFalsy();
             });
 
+        });
+
+        describe('add test value and msg', function() {
+            it('init rule use test value', function() {
+                var rule = new Rule(function (s) {
+                    return s > 0;
+                }, {
+                    args:4,
+                    msg:{
+                        success:'pass',
+                        error:'fail'
+                    }
+                });
+
+                var call = '';
+
+                rule.onSuccess(function(e) {
+                    call = e.msg;
+                });
+
+                rule.validate();
+                expect(call).toEqual('pass');
+            });
+
+            it('overwrite value by validate method', function() {
+                var rule = new Rule(function (a, b, c, d) {
+                    return a+b+c+d>10;
+                }, {
+                    args:[4, 1, 3, 1],
+                    msg:{
+                        success:'pass',
+                        error:'fail'
+                    }
+                });
+
+                var call = '';
+
+                rule.onError(function (e) {
+                    call = e.msg;
+                }).onSuccess(function (e) {
+                    call = e.msg;
+                });
+
+
+                rule.validate(4, 1, 5, 1);
+                expect(call).toEqual('pass');
+            });
         });
     });
 });
