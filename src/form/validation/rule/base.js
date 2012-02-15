@@ -1,12 +1,16 @@
 /**
- * @fileoverview
+ * @fileoverview 所有规则的基类
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
 KISSY.add(function(S, Base, undefined) {
 
     var RULE_SUCCESS = 'success',
-        RULE_ERROR = 'error';
+        RULE_ERROR = 'error',
+        DEFAULT_MSG = {
+            success:'',
+            error:''
+        };
 
     var BaseRule = function() {
         var args = [].slice.call(arguments),
@@ -14,11 +18,13 @@ KISSY.add(function(S, Base, undefined) {
 
         self.validation = args[0] ? args[0]:function() {return true};
 
+        var cfg = S.merge({}, args[1]);
+
         if(args[1]) {
-            var cfg = S.merge({}, args[1]);
-            self._msg = cfg['msg'];
             self._args = S.isArray(cfg['args']) ? cfg['args'] : [cfg['args']];
         }
+
+        self._msg = S.merge(DEFAULT_MSG, cfg['msg']);
 
         BaseRule.superclass.constructor.call(self);
     };
