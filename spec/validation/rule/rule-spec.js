@@ -3,7 +3,7 @@
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
-describe('rule base', function () {
+describe('rule base test suit', function () {
     KISSY.use('form/validation/rule/base', function (S, Rule) {
         it('base rule', function () {
             var rule = new Rule(function (s) {
@@ -130,7 +130,6 @@ describe('rule base', function () {
                     call = e.msg;
                 });
 
-
                 rule.validate(4, 1, 5, 1);
                 expect(call).toEqual('pass');
             });
@@ -154,13 +153,10 @@ describe('rule base', function () {
                     call = e.msg;
                 });
 
-                expect(rule.get('msg').success).toEqual('pass');
-
                 rule.set('msg', {
                     success:'good luck'
                 });
 
-                expect(rule.get('msg').success).toEqual('good luck');
                 rule.validate(4, 1, 5, 1);
                 expect(call).toEqual('good luck');
             });

@@ -69,9 +69,6 @@ KISSY.add(function(S, Base, undefined) {
                 value:'',
                 setter:function(msg) {
                     this._msg = S.merge(this._msg, msg);
-                },
-                getter:function() {
-                    return this._msg;
                 }
             }
         }
