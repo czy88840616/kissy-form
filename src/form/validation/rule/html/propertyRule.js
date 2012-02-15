@@ -17,7 +17,8 @@ KISSY.add(function(S, BaseRule, undefined) {
 
     S.extend(ProPertyRule, BaseRule, {
         validate:function () {
-            return ProPertyRule.superclass.validate.apply(this, arguments);
+            var args = [].slice.call(arguments);
+            return ProPertyRule.superclass.validate.apply(this, args);
         }
     });
 

@@ -9,9 +9,16 @@ KISSY.add(function(S, Base, PropertyRule, undefined) {
         RuleFactory.superclass.constructor.call(self);
     };
 
-    S.extend(RuleFactory, Base, {
-        _init: function() {
+    S.mix(RuleFactory, {
+        require:function(value) {
+            return !!value;
+        }
+        //TODO add another rule
+    });
 
+    S.extend(RuleFactory, Base, {
+        create: function(ruleName) {
+            return new PropertyRule(ruleName, require);
         }
     });
 

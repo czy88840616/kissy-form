@@ -26,5 +26,13 @@ describe('property rule test suit', function() {
             var result = rule.validate();
             expect(result).toBeTruthy();
         });
+
+        it('require rule', function() {
+            var rule = new PropertyRule('require', function(value) {
+                return !!value;
+            });
+            var result = rule.validate(1);
+            expect(result).toBeTruthy();
+        });
     });
 });
