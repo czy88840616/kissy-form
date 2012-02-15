@@ -134,6 +134,36 @@ describe('rule base', function () {
                 rule.validate(4, 1, 5, 1);
                 expect(call).toEqual('pass');
             });
+
+            it('set message', function() {
+                var rule = new Rule(function (a, b, c, d) {
+                    return a+b+c+d>10;
+                }, {
+                    args:[4, 1, 3, 1],
+                    msg:{
+                        success:'pass',
+                        error:'fail'
+                    }
+                });
+
+                var call = '';
+
+                rule.onError(function (e) {
+                    call = e.msg;
+                }).onSuccess(function (e) {
+                    call = e.msg;
+                });
+
+                expect(rule.get('msg').success).toEqual('pass');
+
+                rule.set('msg', {
+                    success:'good luck'
+                });
+
+                expect(rule.get('msg').success).toEqual('good luck');
+                rule.validate(4, 1, 5, 1);
+                expect(call).toEqual('good luck');
+            });
         });
     });
 });

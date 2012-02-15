@@ -3,7 +3,7 @@
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
-KISSY.add(function(S, undefined) {
+KISSY.add(function(S, Base, undefined) {
 
     var RULE_SUCCESS = 'success',
         RULE_ERROR = 'error';
@@ -19,9 +19,11 @@ KISSY.add(function(S, undefined) {
             self._msg = cfg['msg'];
             self._args = S.isArray(cfg['args']) ? cfg['args'] : [cfg['args']];
         }
+
+        BaseRule.superclass.constructor.call(self);
     };
 
-    S.augment(BaseRule, S.EventTarget, {
+    S.extend(BaseRule, Base, {
         validate: function() {
             var self = this;
 
@@ -60,15 +62,24 @@ KISSY.add(function(S, undefined) {
         onValidate: function(validate) {
             this.on('validate', validate);
             return this;
-        },
-        setMessage: function(msg) {
-            this._msg = S.merge(this._msg, msg);
-            return this;
+        }
+    }, {
+        ATTRS: {
+            msg:{
+                value:'',
+                setter:function(msg) {
+                    this._msg = S.merge(this._msg, msg);
+                },
+                getter:function() {
+                    return this._msg;
+                }
+            }
         }
     });
 
     return BaseRule;
 }, {
     requires:[
+        'base'
     ]
 });
