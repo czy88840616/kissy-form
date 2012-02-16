@@ -16,9 +16,10 @@ KISSY.add(function(S, Base, PropertyRule, undefined) {
         //TODO add another rule
     });
 
+
     S.extend(RuleFactory, Base, {
         create: function(ruleName) {
-            return new PropertyRule(ruleName, require);
+            return new PropertyRule(ruleName, RuleFactory[ruleName]);
         }
     });
 
