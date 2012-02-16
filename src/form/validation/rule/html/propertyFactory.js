@@ -10,7 +10,7 @@ KISSY.add(function(S, Base, PropertyRule, undefined) {
     };
 
     S.mix(RuleFactory, {
-        require:function(value) {
+        required :function(value) {
             return !!value;
         }
         //TODO add another rule

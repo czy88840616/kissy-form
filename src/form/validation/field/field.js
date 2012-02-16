@@ -3,14 +3,16 @@
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
-KISSY.add(function (S, Event, RuleParser) {
+KISSY.add(function (S, Event, Base, RuleParser) {
 
     var Field = function () {
         var self = this;
         self.ruleParser = new RuleParser();
+
+        Field.superclass.constructor.call(self);
     };
 
-    S.augment(Field, {
+    S.extend(Field, Base, {
         validate:function () {
             var self = this;
             var res = self.ruleParser.validateAll();
@@ -33,12 +35,11 @@ KISSY.add(function (S, Event, RuleParser) {
         }
     });
 
-    S.augment(Field, S.EventTarget);
-
     return Field;
 }, {
     requires:[
         'event',
+        'base',
         'form/validation/rule/ruleParser'
     ]
 });

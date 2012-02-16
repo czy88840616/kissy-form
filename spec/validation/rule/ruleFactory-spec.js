@@ -3,7 +3,7 @@
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
-describe('rule factory test suit', function() {
+describe('rule factory test suite', function() {
     KISSY.use('form/validation/rule/html/propertyFactory', function (S, PropertyFactory) {
         it('create factory', function() {
             var factory = new PropertyFactory();

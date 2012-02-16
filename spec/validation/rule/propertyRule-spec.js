@@ -3,7 +3,7 @@
  * @author уем╕ <zhangting@taobao.com>
  *
  */
-describe('property rule test suit', function() {
+describe('property rule test suite', function() {
     KISSY.use('form/validation/rule/html/propertyRule', function (S, PropertyRule) {
         it('create a rule', function() {
             var rule = new PropertyRule('test', function(a) {

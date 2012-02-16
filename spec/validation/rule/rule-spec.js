@@ -3,7 +3,7 @@
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
-describe('rule base test suit', function () {
+describe('rule base test suite', function () {
     KISSY.use('form/validation/rule/base', function (S, Rule) {
         it('base rule', function () {
             var rule = new Rule(function (s) {
