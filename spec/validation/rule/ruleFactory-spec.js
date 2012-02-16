@@ -14,7 +14,7 @@ describe('rule factory test suit', function() {
             var factory = new PropertyFactory();
             var rule = factory.create('require');
             var result = rule.validate(1);
-            expect(result).toBeFalsy();
+            expect(result).toBeTruthy();
         });
     });
 });
