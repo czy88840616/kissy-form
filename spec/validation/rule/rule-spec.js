@@ -72,7 +72,7 @@ describe('rule base test suit', function () {
                     return a > b;
                 });
 
-                rule.onValidate(function(e) {
+                rule.on('validate',function(e) {
                     expect(e.result).toBeFalsy();
                 }).validate(2, 4);
             });
@@ -103,7 +103,7 @@ describe('rule base test suit', function () {
 
                 var call = '';
 
-                rule.onSuccess(function(e) {
+                rule.on('success', function(e) {
                     call = e.msg;
                 });
 
@@ -124,9 +124,9 @@ describe('rule base test suit', function () {
 
                 var call = '';
 
-                rule.onError(function (e) {
+                rule.on('error',function (e) {
                     call = e.msg;
-                }).onSuccess(function (e) {
+                }).on('success',function (e) {
                     call = e.msg;
                 });
 
@@ -147,9 +147,9 @@ describe('rule base test suit', function () {
 
                 var call = '';
 
-                rule.onError(function (e) {
+                rule.on('error',function (e) {
                     call = e.msg;
-                }).onSuccess(function (e) {
+                }).on('success',function (e) {
                     call = e.msg;
                 });
 

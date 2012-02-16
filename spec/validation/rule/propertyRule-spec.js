@@ -34,5 +34,24 @@ describe('property rule test suit', function() {
             var result = rule.validate(1);
             expect(result).toBeTruthy();
         });
+
+        it('get msg', function() {
+            var rule = new PropertyRule('test', function(a) {
+                return a > 1;
+            }, {
+                msg:{
+                    success:'pass',
+                    error:'fail'
+                },
+                args:3
+            });
+
+            rule.on('validate', function(e) {
+                expect(e.msg).toEqual('pass');
+            });
+
+            rule.validate();
+
+        });
     });
 });

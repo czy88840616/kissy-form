@@ -53,21 +53,6 @@ KISSY.add(function(S, Base, undefined) {
             });
 
             return validated;
-        },
-
-        onSuccess:function(success) {
-            this.on(RULE_SUCCESS, success);
-            return this;
-        },
-
-        onError:function(error) {
-            this.on(RULE_ERROR, error);
-            return this;
-        },
-
-        onValidate: function(validate) {
-            this.on('validate', validate);
-            return this;
         }
     }, {
         ATTRS: {

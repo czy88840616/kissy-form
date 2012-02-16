@@ -21,10 +21,10 @@ KISSY.add(function(S, BaseRule, undefined) {
             return ProPertyRule.superclass.validate.apply(this, args);
         }
     });
-    return ProPertyRule;
 
+    return ProPertyRule;
 }, {
     requires:[
-        'form/validation/rule/base'
+        '../base'
     ]
 });
