@@ -20,10 +20,19 @@ KISSY.add(function(S, Base, undefined) {
 
         var cfg = S.merge({}, args[1]);
 
+        //save args
         if(args[1]) {
             self._args = S.isArray(cfg['args']) ? cfg['args'] : [cfg['args']];
         }
 
+        //default is error message
+        if(!S.isPlainObject(cfg['msg'])) {
+            cfg['msg'] = {
+                error:cfg['msg']
+            };
+        }
+
+        //merge msg
         self._msg = S.merge(DEFAULT_MSG, cfg['msg']);
 
         BaseRule.superclass.constructor.call(self);

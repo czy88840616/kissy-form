@@ -9,17 +9,21 @@ KISSY.add(function(S, Base, PropertyRule, undefined) {
         RuleFactory.superclass.constructor.call(self);
     };
 
+    //第一个参数一定是属性的value，后面的才是真正的参数
     S.mix(RuleFactory, {
-        required :function(value) {
+        required :function(pv, value) {
             return !!value;
+        },
+        pattern: function(pv, value) {
+            return new RegExp(pv).test(value);
         }
         //TODO add another rule
     });
 
 
     S.extend(RuleFactory, Base, {
-        create: function(ruleName) {
-            return new PropertyRule(ruleName, RuleFactory[ruleName]);
+        create: function(ruleName, cfg) {
+            return new PropertyRule(ruleName, RuleFactory[ruleName], cfg);
         }
     });
 

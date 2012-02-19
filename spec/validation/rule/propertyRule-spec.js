@@ -53,5 +53,9 @@ describe('property rule test suite', function() {
             rule.validate();
 
         });
+
+        it('add property value', function() {
+
+        });
     });
 });

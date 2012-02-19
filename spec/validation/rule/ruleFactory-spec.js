@@ -12,9 +12,31 @@ describe('rule factory test suite', function() {
 
         it('create rule', function() {
             var factory = new PropertyFactory();
-            var rule = factory.create('require');
-            var result = rule.validate(1);
+            var rule = factory.create('required');
+            var result = rule.validate();
+            expect(result).toBeFalsy();
+        });
+
+        it('use init args', function() {
+            var factory = new PropertyFactory();
+            var rule = factory.create('required', {
+                args:['', 1]
+            });
+            var result = rule.validate();
             expect(result).toBeTruthy();
+        });
+
+        it('init msg', function() {
+            var factory = new PropertyFactory();
+            var rule = factory.create('required', {
+                msg:'fail'
+            });
+            var msg = '';
+            var result = rule.on('validate', function(e) {
+                msg = e.msg;
+            }).validate();
+            expect(result).toBeFalsy();
+            expect(msg).toEqual('fail');
         });
     });
 });
