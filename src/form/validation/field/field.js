@@ -12,7 +12,13 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
     var Field = function (el, validConfig) {
         var self = this;
         self._el = el = S.one(el);
+        //储存上一次的校验结果
+        self._cache = {
+            result:true,
+            msg:''
+        };
 
+        //初始化json配置
         if (el && el.hasAttr(CONFIG_NAME)) {
             var cfg = el.attr('data-valid').replace(/'/g, '"');
 
@@ -51,7 +57,9 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
 
             //element event bind
             Event.on(_el, _cfg.eventType || 'blur', function (ev) {
-                self.validate('', _el.val());
+                var result = self.validate('', _el.val());
+                self._cache['result'] = result;
+
             });
         },
 

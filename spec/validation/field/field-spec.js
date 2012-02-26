@@ -53,22 +53,17 @@ describe('field test suite', function() {
         it('use json param', function() {
             $('body').append('<input value="x" required  pattern="[0-9]" id="J_Test"');
             var valid = {
-                event:'blur',
+                event:'focus',
                 rules:{
                     required:'hello world',
-                    pattern:'good pattern',
-                    equalTo:'not same'
+                    pattern:'good pattern'
                 },
                 groups:['test']
             };
 
             var f = new Field('#J_Test', valid);
-
-            //validate all
-            expect(f.validate()).toBeFalsy();
-
-            //validate single rule
-            expect(f.validate('required')).toBeTruthy();
+            $('J_Test').focus();
+            expect(f.getMessage()).toEqual('good pattern');
         });
 
         xit('add custom rule', function() {
