@@ -33,6 +33,15 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         self._cfg = validConfig || {};
         self._storage = {};
 
+        self.publish("validate", {
+            bubbles:1
+        });
+
+        self.on('validate', function(ev) {
+            console.log('A');
+            self._cache['msg'] = ev.msg;
+        });
+
         self._init();
 
         Field.superclass.constructor.call(self);
@@ -48,18 +57,26 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
             //add html property
             S.each(HTML_PROPERTY, function (item) {
                 if (_el.hasAttr(item)) {
-                    self.add(item, factory.create(item, {
+                    var rule = factory.create(item, {
                         //属性的value必须在这里初始化
                         args: [_el.attr(item), _el.val()]
-                    }));
+                    });
+
+                    rule.on('validate', function(ev) {
+                        console.log('b');
+                    });
+
+                    rule.addTarget(self);
+                    self.add(item, rule);
                 }
             });
 
             //element event bind
             Event.on(_el, _cfg.eventType || 'blur', function (ev) {
-                var result = self.validate('', _el.val());
+                var result = self.validate('', {
+                    args:_el
+                }.val());
                 self._cache['result'] = result;
-
             });
         },
 
@@ -73,20 +90,28 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
             delete _storage[name];
         },
 
-        validate:function (name, args) {
-            var result = true, self = this, _storage = self._storage;
+        validate:function (name, cfg) {
+            var result = true, self = this, _storage = self._storage, cfg = S.merge({}, cfg);
 
             if (name) {
-                return _storage[name].validate(args);
+                return _storage[name].validate(cfg.args);
             }
 
             for (var key in _storage) {
-                if (!_storage[key].validate(args)) {
+                if (!_storage[key].validate(cfg.args)) {
                     result = false;
                 }
             }
 
+            //TODO GROUPS
+
             return result;
+        },
+        getMessage:function() {
+            return this._cache['msg'];
+        },
+        getResult:function() {
+            return this._cache['result'];
         }
     });
 

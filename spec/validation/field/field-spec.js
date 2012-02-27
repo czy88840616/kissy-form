@@ -30,7 +30,7 @@ describe('field test suite', function() {
             expect(f.validate('pattern')).toBeFalsy();
 
             //use new value to validation
-            expect(f.validate('pattern', [2])).toBeTruthy();
+            expect(f.validate('pattern', {args:[2]})).toBeTruthy();
         });
 
         xit('use property config json', function() {
@@ -57,12 +57,12 @@ describe('field test suite', function() {
                 rules:{
                     required:'hello world',
                     pattern:'good pattern'
-                },
-                groups:['test']
+                }
             };
 
             var f = new Field('#J_Test', valid);
-            $('J_Test').focus();
+
+            f.validate();
             expect(f.getMessage()).toEqual('good pattern');
         });
 
