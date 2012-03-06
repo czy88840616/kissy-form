@@ -74,8 +74,8 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
             //element event bind
             Event.on(_el, _cfg.eventType || 'blur', function (ev) {
                 var result = self.validate('', {
-                    args:_el
-                }.val());
+                    args:_el.val()
+                });
                 self._cache['result'] = result;
             });
         },
