@@ -58,7 +58,8 @@ KISSY.add(function(S, Base, undefined) {
 
             self.fire('validate', {
                 result: validated,
-                msg: msg
+                msg: msg,
+                name: self._name
             });
 
             return validated;

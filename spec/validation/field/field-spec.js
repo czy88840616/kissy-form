@@ -51,19 +51,43 @@ describe('field test suite', function() {
         });
 
         it('use json param', function() {
-            $('body').append('<input value="x" required  pattern="[0-9]" id="J_Test"');
+            $('body').append('<input value="x" required pattern="[0-9]" id="J_Test"');
             var valid = {
                 event:'focus',
                 rules:{
-                    required:'hello world',
-                    pattern:'good pattern'
+                    required: {
+                        succes:'hello world',
+                        error:'required error'
+                    },
+                    pattern:{
+                        succes:'good pattern',
+                        error:'pattern error'
+                    }
+                }
+            };
+
+            var f = new Field('#J_Test', valid);
+            $('#J_Test').fire('blur');
+            expect(f.getMessage()).toEqual('');
+
+            $('#J_Test').fire('focus');
+            expect(f.getMessage()).toEqual('pattern error');
+        });
+
+        it('use simple message json param2', function() {
+            $('body').append('<input value="x" required pattern="[0-9]" id="J_Test"');
+            var valid = {
+                event:'focus',
+                rules:{
+                    required:'required error',
+                    pattern:'pattern error'
                 }
             };
 
             var f = new Field('#J_Test', valid);
 
-            f.validate();
-            expect(f.getMessage()).toEqual('good pattern');
+            $('#J_Test').fire('focus');
+            expect(f.getMessage()).toEqual('pattern error');
         });
 
         xit('add custom rule', function() {

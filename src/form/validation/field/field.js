@@ -31,15 +31,12 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         }
 
         self._cfg = validConfig || {};
+        //保存rule的集合
         self._storage = {};
 
-        self.publish("validate", {
-            bubbles:1
-        });
-
+        //监听校验结果
         self.on('validate', function(ev) {
-            console.log('A');
-            self._cache['msg'] = ev.msg;
+
         });
 
         self._init();
@@ -51,19 +48,28 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         _init:function () {
             var self = this,
                 _cfg = self._cfg,
-                _el = self._el;
+                _el = self._el,
+                _ruleCfg = S.merge({}, _cfg.rules);
 
+            //从工厂中创建属性规则
             var factory = new Factory();
             //add html property
             S.each(HTML_PROPERTY, function (item) {
                 if (_el.hasAttr(item)) {
                     var rule = factory.create(item, {
                         //属性的value必须在这里初始化
-                        args: [_el.attr(item), _el.val()]
+                        args: [_el.attr(item), _el.val()],
+                        msg: _ruleCfg[item]
+                    });
+
+                    rule.publish("validate", {
+                        bubbles:1
                     });
 
                     rule.on('validate', function(ev) {
-                        console.log('b');
+                        if(ev)
+                        self._cache['result'] &= ev.result;
+                        self._cache['msg'] = ev.msg;
                     });
 
                     rule.addTarget(self);
@@ -72,7 +78,7 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
             });
 
             //element event bind
-            Event.on(_el, _cfg.eventType || 'blur', function (ev) {
+            Event.on(_el, _cfg.event || 'blur', function (ev) {
                 var result = self.validate('', {
                     args:_el.val()
                 });
