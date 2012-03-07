@@ -5,18 +5,16 @@
  */
 KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
 
-    var HTML_PROPERTY = ['required', 'pattern', 'max', 'min'],
+    var HTML_PROPERTY = ['required', 'pattern', 'max', 'min', 'step'],
         EMPTY ='',
         CONFIG_NAME = 'data-valid';
 
     var Field = function (el, validConfig) {
         var self = this;
         self._el = el = S.one(el);
+        self._validateDone = {};
         //储存上一次的校验结果
-        self._cache = {
-            result:true,
-            msg:''
-        };
+        self._cache = {};
 
         //初始化json配置
         if (el && el.hasAttr(CONFIG_NAME)) {
@@ -34,9 +32,26 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         //保存rule的集合
         self._storage = {};
 
-        //监听校验结果
-        self.on('validate', function(ev) {
+        var resetAfterValidate = function() {
+            //TODO
+        }
 
+        //监听校验结果
+        self.on('afterRuleValidate', function(ev) {
+            var result = ev.result,
+                curRule = ev.curRule,
+                msg = self._cache[curRule].msg?self._cache[curRule].msg:EMPTY;
+
+            self.set('result', result);
+            self.set('message', msg);
+
+            self.fire('validate', {
+                result:result,
+                msg:msg,
+                errRule:result? '':curRule
+            });
+
+            resetAfterValidate();
         });
 
         self._init();
@@ -62,17 +77,12 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
                         msg: _ruleCfg[item]
                     });
 
-                    rule.publish("validate", {
-                        bubbles:1
-                    });
-
                     rule.on('validate', function(ev) {
-                        if(ev)
-                        self._cache['result'] &= ev.result;
-                        self._cache['msg'] = ev.msg;
+                        //set cache
+                        self._cache[ev.name]['result'] = ev.result;
+                        self._cache[ev.name]['msg'] = ev.msg;
                     });
 
-                    rule.addTarget(self);
                     self.add(item, rule);
                 }
             });
@@ -89,6 +99,7 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         add:function (name, rule) {
             var _storage = this._storage;
             _storage[name] = rule;
+            this._cache[name] = {};
         },
 
         remove: function(name) {
@@ -97,27 +108,41 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         },
 
         validate:function (name, cfg) {
-            var result = true, self = this, _storage = self._storage, cfg = S.merge({}, cfg);
+            var result = true,
+                self = this,
+                _storage = self._storage,
+                cfg = S.merge({}, cfg),
+                curRule = EMPTY;
 
             if (name) {
-                return _storage[name].validate(cfg.args);
-            }
-
-            for (var key in _storage) {
-                if (!_storage[key].validate(cfg.args)) {
-                    result = false;
+                result = _storage[name].validate(cfg.args);
+                curRule = name;
+            } else {
+                for (var key in _storage) {
+                    curRule = key;
+                    if (!_storage[key].validate(cfg.args)) {
+                        result = false;
+                        break;
+                    }
                 }
             }
+
+            self.fire('afterRuleValidate', {
+                result:result,
+                curRule:curRule
+            });
 
             //TODO GROUPS
 
             return result;
-        },
-        getMessage:function() {
-            return this._cache['msg'];
-        },
-        getResult:function() {
-            return this._cache['result'];
+        }
+
+    }, {
+        ATTRS:{
+            message:{
+                value:EMPTY
+            },
+            result:{}
         }
     });
 

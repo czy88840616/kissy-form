@@ -68,10 +68,10 @@ describe('field test suite', function() {
 
             var f = new Field('#J_Test', valid);
             $('#J_Test').fire('blur');
-            expect(f.getMessage()).toEqual('');
+            expect(f.get('message')).toEqual('');
 
             $('#J_Test').fire('focus');
-            expect(f.getMessage()).toEqual('pattern error');
+            expect(f.get('message')).toEqual('pattern error');
         });
 
         it('use simple message json param2', function() {
@@ -87,7 +87,29 @@ describe('field test suite', function() {
             var f = new Field('#J_Test', valid);
 
             $('#J_Test').fire('focus');
-            expect(f.getMessage()).toEqual('pattern error');
+            expect(f.get('message')).toEqual('pattern error');
+        });
+
+        it('get success rule msg', function() {
+            $('body').append('<input value="1" required pattern="[0-9]" id="J_Test"');
+            var valid = {
+                event:'focus',
+                rules:{
+                    required: {
+                        success:'hello world',
+                        error:'required error'
+                    },
+                    pattern:{
+                        success:'good pattern',
+                        error:'pattern error'
+                    }
+                }
+            };
+
+            var f = new Field('#J_Test', valid);
+
+            $('#J_Test').fire('focus');
+            expect(f.get('message')).toEqual('good pattern');
         });
 
         xit('add custom rule', function() {
