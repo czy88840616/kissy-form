@@ -36,6 +36,21 @@ KISSY.add(function (S, Base, PropertyRule, undefined) {
             if(value == 0 || pv == 1) return true;
 
             return value % pv;
+        },
+        //添加1个特殊的属性
+        equalTo:function(pv, value){
+            //number same
+            if (S.isNumber(value)) {
+                return pv === value;
+            }
+
+            //selector same
+            if(S.one(pv)) {
+                return S.one(pv).val() === value;
+            }
+
+            //string same
+            return pv === value;
         }
     });
 

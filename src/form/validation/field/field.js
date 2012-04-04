@@ -5,7 +5,7 @@
  */
 KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
 
-    var HTML_PROPERTY = ['required', 'pattern', 'max', 'min', 'step'],
+    var HTML_PROPERTY = ['required', 'pattern', 'max', 'min', 'step', 'equalTo'],
         EMPTY ='',
         CONFIG_NAME = 'data-valid';
 
@@ -40,7 +40,7 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         self.on('afterRuleValidate', function(ev) {
             var result = ev.result,
                 curRule = ev.curRule,
-                msg = self._cache[curRule].msg?self._cache[curRule].msg:EMPTY;
+                msg = self._cache[curRule].msg || EMPTY;
 
             self.set('result', result);
             self.set('message', msg);
@@ -67,17 +67,20 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
                 _ruleCfg = S.merge({}, _cfg.rules);
 
             //从工厂中创建属性规则
-            var factory = new Factory();
+            var factory = new Factory();console.log(_el.hasAttr('equalTo'));
             //add html property
             S.each(HTML_PROPERTY, function (item) {
+
                 if (_el.hasAttr(item)) {
                     var rule = factory.create(item, {
                         //属性的value必须在这里初始化
-                        args: [_el.attr(item), _el.val()],
+                        propertyValue:_el.attr(item),
+                        el:_el, //bugfix for change value
                         msg: _ruleCfg[item]
                     });
 
                     rule.on('validate', function(ev) {
+                        console.log('[after rule validate]: name:%s,result:%s,msg:%s', ev.name, ev.result, ev.msg);
                         //set cache
                         self._cache[ev.name]['result'] = ev.result;
                         self._cache[ev.name]['msg'] = ev.msg;
@@ -89,10 +92,7 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
 
             //element event bind
             Event.on(_el, _cfg.event || 'blur', function (ev) {
-                var result = self.validate('', {
-                    args:_el.val()
-                });
-                self._cache['result'] = result;
+                self.validate();
             });
         },
 
@@ -107,6 +107,15 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
             delete _storage[name];
         },
 
+        /**
+         *
+         * @param name
+         * @param cfg {Object}
+         * @param cfg.args
+         * @param cfg.msg
+         *
+         * @return {Boolean}
+         */
         validate:function (name, cfg) {
             var result = true,
                 self = this,

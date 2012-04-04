@@ -4,6 +4,15 @@
  *
  */
 KISSY.add(function(S, BaseRule, undefined) {
+
+    /**
+     * 属性规则
+     *
+     * @param {String} ruleName
+     * @param {Function} ruleBody
+     * @param {Object} rule params and msg
+     * @constructor
+     */
     var ProPertyRule = function() {
         var self = this;
         var args = [].slice.call(arguments);
@@ -15,6 +24,9 @@ KISSY.add(function(S, BaseRule, undefined) {
         var cfg = args[2]||{args:[]};
 
         self._initArgs = cfg.args;
+        //_propertyValue和_el如果要修改必须通过属性的修改
+        self._propertyValue = cfg.propertyValue;
+        self._el = cfg.el;
         ProPertyRule.superclass.constructor.apply(self, args.slice(1));
     };
 
@@ -22,16 +34,14 @@ KISSY.add(function(S, BaseRule, undefined) {
         validate:function () {
             var self = this;
             if(S.isUndefined(arguments[0])) {
-                return ProPertyRule.superclass.validate.apply(this);
+                return ProPertyRule.superclass.validate.apply(this, [self._propertyValue, S.one(self._el).val()].concat(self._initArgs));
             } else {
                 //bugfix for no args input
                 var args = [].slice.call(arguments);
-                //将属性的value作为第一个参数传进去
-                if(self._initArgs.length) {
-                    args = [self._initArgs[0]].concat(args);
-                }
-
-                return ProPertyRule.superclass.validate.apply(this, args);
+                //一旦传入过值之后，表示复写初始化的参数
+                self._initArgs = args;
+                //将属性的value作为第一个参数传进去，将当前元素的值当成第二个参数传入
+                return ProPertyRule.superclass.validate.apply(this, [self._propertyValue, S.one(self._el).val()].concat(args));
             }
         }
     });

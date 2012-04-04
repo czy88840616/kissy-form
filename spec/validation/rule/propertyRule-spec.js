@@ -4,19 +4,44 @@
  *
  */
 describe('property rule test suite', function() {
-    KISSY.use('form/validation/rule/html/propertyRule', function (S, PropertyRule) {
+    KISSY.use('form/validation/rule/html/propertyRule, dom', function (S, PropertyRule, D) {
+        var $ = S.all;
+        beforeEach(function() {
+            D.remove('#J_Test');
+        });
         it('create a rule', function() {
-            var rule = new PropertyRule('test', function(a) {
-                return a > 1;
+            $('body').append('<input value="0" test="true"  id="J_Test"');
+            var rule = new PropertyRule('test', function(pv, value) {
+                return value > 1;
+            }, {
+                propertyValue:'',
+                el:$('#J_Test')
             });
-            var result = rule.validate(2);
+            var result = rule.validate();
+            expect(result).toBeFalsy();
+        });
+
+        it('change value', function() {
+            $('body').append('<input value="0" test="true"  id="J_Test"');
+            var rule = new PropertyRule('test', function(pv, value) {
+                return value > 1;
+            }, {
+                propertyValue:'',
+                el:$('#J_Test')
+            });
+            //change value
+            $('#J_Test').val(2);
+            var result = rule.validate();
             expect(result).toBeTruthy();
         });
 
         it('all args', function() {
-            var rule = new PropertyRule('test', function(a) {
-                return a > 1;
+            $('body').append('<input value="0" test="true"  id="J_Test"');
+            var rule = new PropertyRule('test', function(a, b ,c) {
+                return c > 1;
             }, {
+                propertyValue:'',
+                el:$('#J_Test'),
                 msg:{
                     success:'pass',
                     error:'fail'
@@ -27,18 +52,35 @@ describe('property rule test suite', function() {
             expect(result).toBeTruthy();
         });
 
-        it('require rule', function() {
-            var rule = new PropertyRule('require', function(value) {
-                return !!value;
+        it('overwrite params', function() {
+            $('body').append('<input value="0" test="true"  id="J_Test"');
+            var rule = new PropertyRule('test', function(a, b ,c, d) {
+                return c > 1 && d>c;
+            }, {
+                propertyValue:'',
+                el:$('#J_Test'),
+                msg:{
+                    success:'pass',
+                    error:'fail'
+                },
+                args:[3, 4]
             });
-            var result = rule.validate(1);
-            expect(result).toBeTruthy();
+            //overwrite
+            var result = rule.validate(1,2);
+            expect(result).toBeFalsy();
+
+            //要保留上一次的值
+            result = rule.validate();
+            expect(result).toBeFalsy();
         });
 
         it('get msg', function() {
-            var rule = new PropertyRule('test', function(a) {
-                return a > 1;
+            $('body').append('<input value="2" test="true"  id="J_Test"');
+            var rule = new PropertyRule('test', function(a, b) {
+                return b > 1;
             }, {
+                propertyValue:'',
+                el:$('#J_Test'),
                 msg:{
                     success:'pass',
                     error:'fail'
@@ -47,15 +89,19 @@ describe('property rule test suite', function() {
             });
 
             rule.on('validate', function(e) {
-                expect(e.msg).toEqual('pass');
+                if(e.result) {
+                    expect(e.msg).toEqual('pass');
+                } else {
+                    expect(e.msg).toEqual('fail');
+                }
+
             });
 
             rule.validate();
 
+            $('#J_Test').val('x');
+            rule.validate();
         });
 
-        it('add property value', function() {
-
-        });
     });
 });
