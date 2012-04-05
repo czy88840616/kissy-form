@@ -3,7 +3,7 @@
  * @author czy88840616 <czy88840616@gmail.com>
  *
  */
-KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
+KISSY.add(function (S, Event, Base, JSON, Factory, Rule, undefined) {
 
     var HTML_PROPERTY = ['required', 'pattern', 'max', 'min', 'step', 'equalTo'],
         EMPTY ='',
@@ -67,7 +67,7 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
                 _ruleCfg = S.merge({}, _cfg.rules);
 
             //从工厂中创建属性规则
-            var factory = new Factory();console.log(_el.hasAttr('equalTo'));
+            var factory = new Factory();
             //add html property
             S.each(HTML_PROPERTY, function (item) {
 
@@ -96,9 +96,17 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
             });
         },
 
-        add:function (name, rule) {
+        add:function (name, rule, cfg) {
             var _storage = this._storage;
-            _storage[name] = rule;
+            if(rule instanceof Rule) {
+                _storage[name] = rule;
+            } else {
+                _storage[name] = new Rule(name, rule, {
+                    el:self._el
+                    //TODO args
+                });
+            }
+
             this._cache[name] = {};
         },
 
@@ -161,6 +169,7 @@ KISSY.add(function (S, Event, Base, JSON, Factory, undefined) {
         'event',
         'base',
         'json',
-        '../rule/html/propertyFactory'
+        '../rule/html/propertyFactory',
+        '../rule/rule'
     ]
 });
